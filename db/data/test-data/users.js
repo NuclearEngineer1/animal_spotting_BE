@@ -16,7 +16,7 @@ module.exports = [
     hash: "hash4",
   },
   {
-    username: "naruto",
-    hash: "hash4"
+    username: "kevin",
+    hash: "hash5"
   }
 ];
