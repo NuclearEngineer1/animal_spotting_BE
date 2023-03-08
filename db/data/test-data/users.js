@@ -8,7 +8,7 @@ module.exports = [
     hash: "hash2",
   },
   {
-    username: "pikachu457",
+    username: "bossman123",
     hash: "hash3",
   },
   {
