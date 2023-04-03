@@ -1,10 +1,11 @@
 const format = require("pg-format");
 const db = require("../connection");
-const { convertTimeStampToDate } = require("./utils");
+const { convertTimestampToDate } = require("./utils");
 
 const seed = async ({ sightingData, commentData, userData }) => {
-  await db.query("DROP TABLE IF EXISTS sightings");
+  console.log("Seed started")
   await db.query("DROP TABLE IF EXISTS comments");
+  await db.query("DROP TABLE IF EXISTS sightings");
   await db.query("DROP TABLE IF EXISTS users");
 
   await db.query(
@@ -12,18 +13,11 @@ const seed = async ({ sightingData, commentData, userData }) => {
       username VARCHAR PRIMARY KEY,
       hash VARCHAR NOT NULL
     )`
+    
   );
 
-  await db.query(
-    `CREATE TABLE comments (
-      comment_id SERIAL PRIMARY KEY,
-      sighting_id INT NOT NULL REFERENCES sightings(sighting_id),
-      body VARCHAR NOT NULL,
-      author VARCHAR NOT NULL REFERENCES users(username),
-      created_at TIMESTAMP DEFAULT NOW()
-    )`
-  );
-
+  console.log("Users table created")
+  
   await db.query(
     `CREATE TABLE sightings (
       sighting_id SERIAL PRIMARY KEY,
@@ -34,10 +28,24 @@ const seed = async ({ sightingData, commentData, userData }) => {
       date_submitted TIMESTAMP DEFAULT NOW(),
       author VARCHAR NOT NULL REFERENCES users(username),
       img_base64 VARCHAR,
-      description VARCHAR     
+      description VARCHAR,
+      votes INT DEFAULT 0   
     )`
   );
 
+    await db.query(
+      `CREATE TABLE comments (
+      comment_id SERIAL PRIMARY KEY,
+      sighting_id INT NOT NULL REFERENCES sightings(sighting_id),
+      body VARCHAR NOT NULL,
+      author VARCHAR NOT NULL REFERENCES users(username),
+      created_at TIMESTAMP DEFAULT NOW(),
+      votes INT DEFAULT 0
+    )`
+    );
+
+  console.log("All tables created")
+  
   const insertUsersQueryStr = format(
     `INSERT INTO users (username, hash) VALUES %L RETURNING *`,
     userData.map(({ username, hash }) => {
@@ -45,20 +53,21 @@ const seed = async ({ sightingData, commentData, userData }) => {
     })
   );
 
-  const formattedCommentData = commentData.map(convertTimeStampToDate);
+  const formattedCommentData = commentData.map(convertTimestampToDate);
 
-  const formattedSightingData = sightingData.map(convertTimeStampToDate);
+  const formattedSightingData = sightingData.map(convertTimestampToDate);
+
 
   const insertCommentsQueryStr = format(
-    `INSERT INTO comments (sighting_id, body, author, created_at) VALUES %L RETURNING *`,
-    commentData.map(({ sighting_id, body, author, created_at }) => {
-      return [sighting_id, body, author, created_at];
+    `INSERT INTO comments (sighting_id, body, author, created_at, votes) VALUES %L RETURNING *`,
+    formattedCommentData.map(({ sighting_id, body, author, created_at, votes }) => {
+      return [sighting_id, body, author, created_at, votes];
     })
   );
 
   const insertSightingsQueryStr = format(
-    `INSERT INTO sightings (species, lat, long, date_spotted, date_submitted, author, img_base64, description) VALUES %L RETURNING *`,
-    sightingData.map(
+    `INSERT INTO sightings (species, lat, long, date_spotted, date_submitted, author, img_base64, description, votes) VALUES %L RETURNING *`,
+    formattedSightingData.map(
       ({
         species,
         lat,
@@ -68,6 +77,7 @@ const seed = async ({ sightingData, commentData, userData }) => {
         author,
         img_base64,
         description,
+        votes
       }) => {
         return [
           species,
@@ -78,6 +88,7 @@ const seed = async ({ sightingData, commentData, userData }) => {
           author,
           img_base64,
           description,
+          votes
         ];
       }
     )
@@ -86,8 +97,10 @@ const seed = async ({ sightingData, commentData, userData }) => {
   await db.query(insertUsersQueryStr);
 
   await db.query(insertSightingsQueryStr).then(result => result.rows);
-
+       console.log("Sighting data inserted");
   await db.query(insertCommentsQueryStr);
+
+  console.log("Seed complete")
 };
 
 module.exports = seed;

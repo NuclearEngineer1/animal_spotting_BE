@@ -9,7 +9,7 @@ afterAll(() => db.end())
 beforeEach(() => seed(testData))
 
 describe("GET /api/sightings", () => {
-  test("returns 200 and a list of sightings", () => {
+  test("returns 200 and a list of sightings", async () => {
     return request(app)
       .get("/api/sightings")
       .expect(200)
@@ -27,7 +27,8 @@ describe("GET /api/sightings", () => {
               author: expect.any(String),
               img_base64: expect.any(String),
               description: expect.any(String),
-              votes: expect.any(Number)
+              votes: expect.any(Number),
+              sighting_id: expect.any(Number)
             })
           )
         })
