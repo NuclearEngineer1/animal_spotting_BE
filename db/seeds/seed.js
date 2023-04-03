@@ -85,7 +85,7 @@ const seed = async ({ sightingData, commentData, userData }) => {
 
   await db.query(insertUsersQueryStr);
 
-  await db.query(insertSightingsQueryStr);
+  await db.query(insertSightingsQueryStr).then(result => result.rows);
 
   await db.query(insertCommentsQueryStr);
 };
