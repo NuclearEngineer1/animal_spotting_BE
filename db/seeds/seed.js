@@ -3,7 +3,6 @@ const db = require("../connection");
 const { convertTimestampToDate } = require("./utils");
 
 const seed = async ({ sightingData, commentData, userData }) => {
-  console.log("Seed started")
   await db.query("DROP TABLE IF EXISTS comments");
   await db.query("DROP TABLE IF EXISTS sightings");
   await db.query("DROP TABLE IF EXISTS users");
@@ -24,7 +23,7 @@ const seed = async ({ sightingData, commentData, userData }) => {
       long FLOAT NOT NULL,
       date_spotted TIMESTAMP NOT NULL,
       date_submitted TIMESTAMP DEFAULT NOW(),
-      author VARCHAR NOT NULL REFERENCES users(username),
+      author VARCHAR NOT NULL,
       img_base64 VARCHAR,
       description VARCHAR,
       votes INT DEFAULT 0   
@@ -36,7 +35,7 @@ const seed = async ({ sightingData, commentData, userData }) => {
       comment_id SERIAL PRIMARY KEY,
       sighting_id INT NOT NULL REFERENCES sightings(sighting_id),
       body VARCHAR NOT NULL,
-      author VARCHAR NOT NULL REFERENCES users(username),
+      author VARCHAR NOT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       votes INT DEFAULT 0
     )`
@@ -94,9 +93,9 @@ const seed = async ({ sightingData, commentData, userData }) => {
   await db.query(insertUsersQueryStr);
 
   await db.query(insertSightingsQueryStr).then(result => result.rows);
-       console.log("Sighting data inserted");
+
   await db.query(insertCommentsQueryStr);
-  
+
 };
 
 module.exports = seed;
