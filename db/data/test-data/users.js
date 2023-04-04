@@ -1,22 +1,37 @@
-module.exports = [
+const bcrypt = require("bcrypt")
+
+const testUsers = [
   {
     username: "badmanting",
-    hash: "hash1",
+    password: "hfg732hhaswdf7",
   },
   {
     username: "madDog123",
-    hash: "hash2",
+    password: "dskj348hfwsjb",
   },
   {
     username: "bossman123",
-    hash: "hash3",
+    password: "dsnkjdvhn74basv",
   },
   {
     username: "naruto",
-    hash: "hash4",
+    password: "dsfnjbgf74b8",
   },
   {
     username: "kevin",
-    hash: "hash5"
-  }
+    password: "dsfnjsb784be7",
+  },
 ];
+  
+const testHashes = []
+
+for (const user of testUsers) {
+  bcrypt.hash(user.password, 10).then((hash) => {
+    testHashes.push({
+      username: user.username,
+      hash: hash
+    })
+  })
+}
+
+module.exports = testHashes;

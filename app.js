@@ -8,4 +8,5 @@ const app = express()
 
 app.get("/api/sightings", getSightings)
 
+
 module.exports = app

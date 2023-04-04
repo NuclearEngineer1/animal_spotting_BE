@@ -15,8 +15,6 @@ const seed = async ({ sightingData, commentData, userData }) => {
     )`
     
   );
-
-  console.log("Users table created")
   
   await db.query(
     `CREATE TABLE sightings (
@@ -43,8 +41,7 @@ const seed = async ({ sightingData, commentData, userData }) => {
       votes INT DEFAULT 0
     )`
     );
-
-  console.log("All tables created")
+  
   
   const insertUsersQueryStr = format(
     `INSERT INTO users (username, hash) VALUES %L RETURNING *`,
@@ -99,8 +96,7 @@ const seed = async ({ sightingData, commentData, userData }) => {
   await db.query(insertSightingsQueryStr).then(result => result.rows);
        console.log("Sighting data inserted");
   await db.query(insertCommentsQueryStr);
-
-  console.log("Seed complete")
+  
 };
 
 module.exports = seed;
