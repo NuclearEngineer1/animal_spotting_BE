@@ -38,7 +38,7 @@ describe("GET /api/sightings", () => {
 })
 
 describe("POST /api/register", () => {
-  test('returns 201 and user is added to database', async () => {
+  test('returns 201 and user is added to database', () => {
        return request(app)
       .post('/api/register')
       .send({
@@ -55,6 +55,33 @@ describe("POST /api/register", () => {
       }).then((result) => {
         expect(result).toEqual(true)
     })
+  });
+})
+
+describe("GET /api/login", () => { 
+  test("returns 200 and true if user is authorized", () => {
+    return request(app)
+      .get("/api/auth")
+      .send({
+        username: "naruto",
+        password: "dsfnjbgf74b8"
+      })
+      .expect(200)
+      .then(({ body: { authorized } }) => {
+        expect(authorized).toEqual(true)
+      });
+  })
+  test("returns 200 and false if user isn't authorized", () => {
+    return request(app)
+      .get("/api/auth")
+      .send({
+        username: "naruto",
+        password: "potato",
+      })
+      .expect(200)
+      .then(({ body: { authorized } }) => {
+        expect(authorized).toEqual(false);
+      });
   });
 })
 
