@@ -9,9 +9,9 @@ exports.selectSightings = () => {
 
 exports.insertUser = (req) => {
   return bcrypt.hash(req.body.password, 10).then((hash) => {
-    return db.query("INSERT INTO users VALUES ($1, $2)", [
+    return db.query("INSERT INTO users VALUES ($1, $2) RETURNING *", [
       req.body.username,
       hash,
-    ]);
-  })
-}
+    ])
+  }
+)}

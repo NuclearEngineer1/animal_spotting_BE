@@ -1,4 +1,5 @@
 const { selectSightings, insertUser } = require("./models");
+const db = require("./db/connection");
 
 exports.getSightings = (req, res, next) => {
   selectSightings().then((sightings) => {
@@ -7,7 +8,7 @@ exports.getSightings = (req, res, next) => {
 };
 
 exports.postUser = (req, res, next) => {
-  insertUser(req).then(() => {
-    res.status(201);
+  insertUser(req).then((user) => {
+    res.sendStatus(201);
   });
 };
