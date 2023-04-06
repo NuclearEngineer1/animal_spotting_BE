@@ -71,7 +71,6 @@ describe("POST /api/sightings", () => {
         );
       })
       .then((sighting) => {
-        console.log(typeof sighting.rows[0].date_spotted)
         expect(sighting.rows[0]).toEqual(
           expect.objectContaining({
             sighting_id: expect.any(Number),
