@@ -1,4 +1,9 @@
-const { selectSightings, insertUser, checkHash } = require("./models");
+const {
+  selectSightings,
+  insertUser,
+  checkHash,
+  insertSighting,
+} = require("./models");
 const db = require("./db/connection");
 
 exports.getSightings = (req, res, next) => {
@@ -20,5 +25,12 @@ exports.getAuth = (req, res, next) => {
     } else {
       res.send({ authorized: false });
     }
-  })
-}
+  });
+};
+
+exports.postSighting = (req, res, next) => {
+  insertSighting(req).then((sighting) => {
+    res.status(201)
+    res.send(sighting.rows[0])
+  });
+};
