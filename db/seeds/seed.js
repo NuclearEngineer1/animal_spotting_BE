@@ -2,18 +2,10 @@ const format = require("pg-format");
 const db = require("../connection");
 const { convertTimestampToDate } = require("./utils");
 
-const seed = async ({ sightingData, commentData, userData }) => {
+const seed = async ({ sightingData, commentData}) => {
   await db.query("DROP TABLE IF EXISTS comments");
   await db.query("DROP TABLE IF EXISTS sightings");
   await db.query("DROP TABLE IF EXISTS users");
-
-  await db.query(
-    `CREATE TABLE users (
-      username VARCHAR PRIMARY KEY,
-      hash VARCHAR NOT NULL
-    )`
-    
-  );
   
   await db.query(
     `CREATE TABLE sightings (
@@ -42,12 +34,6 @@ const seed = async ({ sightingData, commentData, userData }) => {
     );
   
   
-  const insertUsersQueryStr = format(
-    `INSERT INTO users (username, hash) VALUES %L RETURNING *`,
-    userData.map(({ username, hash }) => {
-      return [username, hash];
-    })
-  );
 
   const formattedCommentData = commentData.map(convertTimestampToDate);
 
@@ -89,8 +75,6 @@ const seed = async ({ sightingData, commentData, userData }) => {
       }
     )
   );
-
-  await db.query(insertUsersQueryStr);
 
   await db.query(insertSightingsQueryStr).then(result => result.rows);
 
