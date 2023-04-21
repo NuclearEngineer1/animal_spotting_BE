@@ -14,8 +14,4 @@ app.get("/api/sightings", getSightings)
 
 app.post("/api/sightings", postSighting);
 
-app.get("/api/auth", getAuth);
-
-app.post("/api/register", postUser)
-
 module.exports = app
