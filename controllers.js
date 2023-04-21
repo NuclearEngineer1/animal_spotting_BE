@@ -1,8 +1,6 @@
 const {
   selectSightings,
-  insertUser,
-  checkHash,
-  insertSighting,
+  insertSighting
 } = require("./models");
 const db = require("./db/connection");
 

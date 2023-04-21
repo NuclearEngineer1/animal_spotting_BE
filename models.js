@@ -1,7 +1,4 @@
 const db = require("./db/connection");
-const bcrypt = require("bcrypt");
-const format = require("pg-format");
-const {convertTimestampToDate} = require("./db/seeds/utils")
 
 exports.selectSightings = () => {
   return db.query("SELECT * FROM sightings").then((topics) => {
